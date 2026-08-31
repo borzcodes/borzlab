@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mahmoud Hamidoun — Full-stack developer</title>
+<meta name="description" content="Mahmoud Hamidoun builds web products end to end — the interface, the logic behind it, and the infrastructure that keeps it running.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<header>
+  <nav>
+
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="btn btn-solid nav-cta" data-magnetic>Start a project</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <!-- VIDEO: drop your file in /assets and keep these names, or edit the src paths.
+       Recommended: a compressed .mp4 (H.264) plus an optional smaller .webm,
+       and a poster image so something shows before the video loads. -->
+  <section class="hero" id="home">
+    <div class="hero-media" aria-hidden="true">
+      <video id="heroVideo" class="hero-video"
+             autoplay muted loop playsinline
+             preload="metadata"
+             poster="assets/hero-poster.jpg">
+        <source src="assets/hero.webm" type="video/webm">
+        <source src="assets/hero.mp4"  type="video/mp4">
+      </video>
+      <div class="hero-scrim"></div>
+    </div>
+
+    <div class="wrap hero-inner">
+
+      <!-- avatar: replace assets/avatar.jpg with your photo -->
+      <div class="hero-avatar reveal">
+        <img src="data:image/webp;base64,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" alt="Mahmoud Hamidoun">
+      </div>
+
+      <div class="tag reveal" style="--d:.04s">Full-stack developer · Morocco</div>
+      <h1 class="reveal" style="--d:.08s">The whole stack,<br>drawn <span class="hl">to scale</span>.</h1>
+      <p class="lede reveal" style="--d:.14s">
+        I'm Mahmoud Hamidoun. I build web products end to end — the interface people
+        touch, the logic behind it, and the infrastructure that keeps it standing up.
+      </p>
+
+      <div class="hero-actions reveal" style="--d:.2s">
+        <a href="#work" class="btn btn-solid" data-magnetic>See the work</a>
+        <a href="#contact" class="btn btn-ghost" data-magnetic>Start a project</a>
+      </div>
+
+      <!-- status bar from the reference image -->
+      <div class="hero-status reveal" style="--d:.27s">
+        <span class="status-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Based worldwide · Remote
+        </span>
+        <span class="status-item">
+          <span class="dot" aria-hidden="true"></span>
+          Available for new projects
+        </span>
+        <a href="#contact" class="status-cta">Get in touch →</a>
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- ============ WORK ============ -->
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="tag reveal">Selected work</div>
+        <h2 class="reveal" style="--d:.06s">Things I've built</h2>
+      </div>
+
+      <div class="work-tiles" id="workTiles"></div>
+    </div>
+
+    <div class="rail-wrap">
+      <div class="rail" id="workRail"></div>
+      <div class="rail-dots" id="railDots" role="tablist" aria-label="Browse projects"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <!-- Placeholder answers — rewrite the copy inside each <p> whenever you like. -->
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="faq-head">
+        <h2 class="reveal">Answers to your questions</h2>
+        <p class="reveal" style="--d:.08s">Clear, honest answers to the things clients ask me most.</p>
+      </div>
+
+      <div class="faq-list" id="faqList">
+        <div class="faq-item" style="--d:0.00s">
+          <button type="button" class="faq-q" aria-expanded="false" id="faq-q0" aria-controls="faq-a0">
+            What type of websites do you build?
+            <span class="faq-sign" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a" id="faq-a0" role="region" aria-labelledby="faq-q0">
+            <p>Marketing sites, portfolios, dashboards, e-commerce stores and custom web apps — anything that runs in a browser. If it needs a backend, authentication or payments, I build that side too.</p>
+          </div>
+        </div>
+        <div class="faq-item" style="--d:0.07s">
+          <button type="button" class="faq-q" aria-expanded="false" id="faq-q1" aria-controls="faq-a1">
+            How long does a typical project take?
+            <span class="faq-sign" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-q1">
+            <p>A focused landing page is usually one to two weeks. A full multi-page site with a CMS runs three to five weeks. Larger applications depend on scope — I'll give you a realistic timeline before any work starts.</p>
+          </div>
+        </div>
+        <div class="faq-item" style="--d:0.14s">
+          <button type="button" class="faq-q" aria-expanded="false" id="faq-q2" aria-controls="faq-a2">
+            Can you work with our existing brand identity?
+            <span class="faq-sign" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-q2">
+            <p>Yes. If you already have a logo, palette, typefaces or a design system, I'll build to it exactly. If you only have fragments, I can extend them into something consistent across the site.</p>
+          </div>
+        </div>
+        <div class="faq-item" style="--d:0.21s">
+          <button type="button" class="faq-q" aria-expanded="false" id="faq-q3" aria-controls="faq-a3">
+            Do you handle SEO and conversions too?
+            <span class="faq-sign" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-q3">
+            <p>The technical foundation comes as standard — semantic markup, fast load times, metadata, sitemaps and accessibility. For conversions I'll advise on page structure and calls to action, though ongoing content and ad strategy are outside what I do.</p>
+          </div>
+        </div>
+        <div class="faq-item" style="--d:0.28s">
+          <button type="button" class="faq-q" aria-expanded="false" id="faq-q4" aria-controls="faq-a4">
+            What happens after launch?
+            <span class="faq-sign" aria-hidden="true"></span>
+          </button>
+          <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4">
+            <p>You get the full codebase and a walkthrough of how to run it. I stay available for fixes for a period after launch, and I can take on ongoing maintenance or new features as a separate arrangement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="cta" id="contact">
+    <div class="wrap">
+
+      <div class="contact-head">
+        <div class="tag reveal">Contact</div>
+        <h2 class="reveal" style="--d:.06s">Let's build something<br>worth <span class="hl">shipping</span></h2>
+        <p class="reveal" style="--d:.12s">Pick a time and I'll reach back within 24h to confirm the call.</p>
+      </div>
+
+      <div class="meet-card-wrap reveal" style="--d:.16s">
+        <div class="meet-card-solo">
+
+          <div class="meet-head">
+            <div class="meet-avatar">
+              <img src="data:image/webp;base64,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" alt="Mahmoud Hamidoun">
+            </div>
+            <div>
+              <div class="meet-name">Mahmoud Hamidoun</div>
+              <div class="meet-role">Full-stack developer</div>
+            </div>
+          </div>
+
+          <h3 class="meet-title">30 min intro call</h3>
+          <p class="meet-sub">A short call to see if we're a fit.</p>
+
+          <ul class="meet-points">
+            <li>Introduce how I work</li>
+            <li>Clarify your project's needs and constraints</li>
+            <li>Share relevant work and agree the next step</li>
+          </ul>
+
+          <ul class="meet-meta">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              30 minutes
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Google Meet
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Africa/Tangier
+            </li>
+          </ul>
+
+          <a href="mailto:mahmoudcodes@gmail.com?subject=30-min%20intro%20call%20request&body=Hi%20Mahmoud%2C%0A%0AI%E2%80%99d%20like%20to%20book%20a%2030-minute%20intro%20call%20on%20Google%20Meet.%0A%0A---%20About%20my%20project%20---%0A%0A%F0%9F%92%A1%20What%20I%E2%80%99m%20building%3A%0A(describe%20your%20idea%20here)%0A%0A%F0%9F%8E%AF%20Main%20goals%20and%20features%3A%0A(what%20should%20the%20finished%20product%20do%3F)%0A%0A%F0%9F%93%85%20My%20availability%20(2%E2%80%933%20time%20slots%2C%20GMT%2B1)%3A%0A-%20Option%201%3A%20%0A-%20Option%202%3A%20%0A-%20Option%203%3A%20%0A%0ALooking%20forward%20to%20speaking%20with%20you.%0A%0ABest%2C%0A(your%20name)" class="btn btn-solid meet-btn-solo">Book a call →</a>
+
+          <p class="meet-note">Clicking opens your email with a ready-to-send message — just fill in your details.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <a href="#home" class="foot-brand">Mahmoud Hamidoun</a>
+      <div class="foot-contact">
+        <a href="mailto:mahmoudcodes@gmail.com" class="foot-mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          mahmoudcodes@gmail.com
+        </a>
+        <a href="tel:+212655978924" class="foot-mail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+          +212 655-978924
+        </a>
+        <div class="socials">
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9h4v2a4 4 0 0 1 4-2c3 0 4 2 4 5v7h-4v-6c0-1.5-.5-3-2-3s-2 1.5-2 3v6h-4z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m4 4 16 16M20 4 4 20"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".7" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Mahmoud Hamidoun</span>
+      <div class="foot-links">
+        <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="projects-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
