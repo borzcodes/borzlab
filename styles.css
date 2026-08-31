@@ -289,15 +289,16 @@ header.scrolled nav{
 .tile-art svg{width:100%; display:block;}
 
 /* --- horizontal rail --- */
-.rail-wrap{position:relative; margin:2px 0 0;}
+.rail-wrap{position:relative; margin:2px 0 0; overflow:hidden;}
 .rail{
   display:flex; gap:2px; overflow-x:auto; scroll-snap-type:x mandatory;
-  padding:0 max(var(--pad), calc((100vw - var(--maxw)) / 2));
+  overscroll-behavior-x:contain;
+  padding:0;
   scrollbar-width:none;
 }
 .rail::-webkit-scrollbar{display:none;}
 .rail-card{
-  position:relative; flex:0 0 300px; scroll-snap-align:start; cursor:pointer;
+  position:relative; flex:0 0 300px; scroll-snap-align:start; scroll-snap-stop:always; cursor:pointer;
   overflow:hidden; background:var(--bg-2); aspect-ratio:3/4;
   transition:transform .35s cubic-bezier(.2,.8,.2,1);
 }
