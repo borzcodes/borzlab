@@ -160,42 +160,59 @@ rail.innerHTML = rest.map(p => {
     </a>`;
 }).join('');
 
-/* --- rail dots: build them, then track scroll position --- */
+/* --- rail dots: only create dots for cards that can actually be snapped to --- */
 const railDots = document.getElementById('railDots');
 if(railDots && rest.length){
-  rest.forEach((p, i) => {
-    const d = document.createElement('button');
-    d.type = 'button';
-    d.className = 'rail-dot';
-    d.setAttribute('role','tab');
-    d.setAttribute('aria-label', `Go to ${p.title}`);
-    d.addEventListener('click', () => {
-      const card = rail.children[i];
-      if(card) rail.scrollTo({left: card.offsetLeft - rail.offsetLeft, behavior:'smooth'});
-    });
-    railDots.appendChild(d);
-  });
+  /* how many cards fit fully in the visible rail width? */
+  function countVisible(){
+    const cardW = rail.children[0]?.offsetWidth || 300;
+    return Math.round(rail.clientWidth / cardW);
+  }
+  function buildDots(){
+    railDots.innerHTML = '';
+    const cards = Array.from(rail.children);
+    if(!cards.length) return;
+    const visible = countVisible();
+    const dotCount = Math.max(1, cards.length - visible + 1); // last dot = last card fully visible
+    for(let i = 0; i < dotCount; i++){
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'rail-dot';
+      d.setAttribute('role','tab');
+      d.setAttribute('aria-label', `Slide ${i + 1}`);
+      const idx = i;
+      d.addEventListener('click', () => {
+        const card = rail.children[idx];
+        if(card) rail.scrollTo({left: card.offsetLeft - rail.offsetLeft, behavior:'smooth'});
+      });
+      railDots.appendChild(d);
+    }
+    syncDots();
+  }
 
   function syncDots(){
     const cards = Array.from(rail.children);
-    if(!cards.length) return;
-    // whichever card sits closest to the rail's left edge is the active one
+    if(!cards.length || !railDots.children.length) return;
     const edge = rail.scrollLeft;
     let active = 0, best = Infinity;
     cards.forEach((c, i) => {
       const dist = Math.abs((c.offsetLeft - cards[0].offsetLeft) - edge);
       if(dist < best){ best = dist; active = i; }
     });
+    /* clamp active to the number of dots we actually drew;
+       also snap to the last dot when the rail is fully scrolled */
+    const atEnd = Math.abs(rail.scrollLeft + rail.clientWidth - rail.scrollWidth) < 4;
+    if(atEnd) active = railDots.children.length - 1;
+    else active = Math.min(active, railDots.children.length - 1);
     Array.from(railDots.children).forEach((d, i) => {
       d.classList.toggle('on', i === active);
       d.setAttribute('aria-selected', String(i === active));
     });
   }
-  rail.addEventListener('scroll', () => {
-    window.requestAnimationFrame(syncDots);
-  }, {passive:true});
-  window.addEventListener('resize', syncDots);
-  syncDots();
+
+  rail.addEventListener('scroll', () => window.requestAnimationFrame(syncDots), {passive:true});
+  window.addEventListener('resize', () => { buildDots(); });
+  buildDots();
 }
 
 document.querySelectorAll('.tile, .rail-card, .faq-item').forEach(el => io.observe(el));
