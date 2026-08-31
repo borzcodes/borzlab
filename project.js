@@ -150,14 +150,23 @@ document.getElementById('caseRoot').innerHTML = `
       </div>
       <ul class="index-list">
         ${others.map((p, i) => `
-          <li class="reveal" style="--d:${(i % 4) * .04}s">
-            <a href="project.html?id=${p.id}">
+          <li class="index-item reveal" style="--d:${(i % 4) * .04}s">
+            <a class="index-row" href="project.html?id=${p.id}">
               <span class="index-num">${String(i + 1).padStart(2, '0')}</span>
               <span class="index-name">${esc(p.title)}</span>
-              <span class="index-tag">${esc(p.tag)}</span>
+              <span class="index-client">${esc(p.client)}</span>
               <span class="index-year">${esc(p.year)}</span>
-              <span class="index-arrow" aria-hidden="true">→</span>
             </a>
+            <div class="index-panel">
+              <div class="panel-inner">
+                <div class="panel-thumb">${visual(p.cover, p.title)}</div>
+                <div class="panel-body">
+                  <span class="panel-meta">${esc(p.tag)} · ${esc(p.scope)}</span>
+                  <p class="panel-text">${esc(p.summary)}</p>
+                  <a class="panel-link" href="project.html?id=${p.id}">See the project <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </div>
           </li>`).join('')}
       </ul>
     </div>
