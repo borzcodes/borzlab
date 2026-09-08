@@ -119,23 +119,42 @@ const rest     = projects.slice(FEATURED, FEATURED + RAIL_LEN);
 const tiles   = document.getElementById('workTiles');
 const rail    = document.getElementById('workRail');
 
+/* --- live preview: a recording of the real site, running inside a browser frame --- */
+function livePreview(p){
+  const v = p.preview.video;
+  return `
+    <div class="tp">
+      <div class="tp-bar">
+        <i></i><i></i><i></i>
+        <span class="tp-url">${escapeHTML(p.preview.url)}</span>
+      </div>
+      <div class="tp-load"><b></b></div>
+      <div class="tp-screen">
+        <video class="tp-video" playsinline muted loop preload="none"
+               poster="${escapeHTML(v.poster || '')}"
+               aria-label="${escapeHTML(p.title)} — a recording of the live site">
+          ${v.webm ? `<source src="${escapeHTML(v.webm)}" type="video/webm">` : ''}
+          ${v.mp4 ? `<source src="${escapeHTML(v.mp4)}" type="video/mp4">` : ''}
+        </video>
+        <span class="tp-glare"></span>
+      </div>
+    </div>`;
+}
+
 /* --- the four hero tiles --- */
 tiles.innerHTML = featured.map((p, i) => {
   const dark  = i >= 2;                       // second row goes dark, Apple-style
   const title = escapeHTML(p.title);
-  const art   = p.image
+  const art   = p.preview ? livePreview(p)
+    : p.image
     ? `<img src="${escapeHTML(p.image)}" alt="${title} preview" loading="lazy">`
     : generateArt(p.id, 600, 340, dark);
   return `
-    <a class="tile${dark ? ' dark' : ''} reveal" style="--d:${i * .07}s" href="project.html?id=${p.id}"
+    <a class="tile${dark ? ' dark' : ''}${p.preview ? ' tile-live' : ''} reveal" style="--d:${i * .07}s" href="project.html?id=${p.id}"
        aria-label="View the ${title} case study">
       <div class="tile-eyebrow">${escapeHTML(p.tag)}</div>
       <h3>${title}</h3>
-      <p class="tile-sub">${escapeHTML(p.short)}</p>
-      <div class="tile-actions">
-        <span class="pill">Learn more</span>
-        <span class="pill pill-ghost">Case study</span>
-      </div>
+      <span class="tile-more">View details <i aria-hidden="true">→</i></span>
       <div class="tile-art">${art}</div>
     </a>`;
 }).join('');
@@ -216,6 +235,20 @@ if(railDots && rest.length){
 }
 
 document.querySelectorAll('.tile, .rail-card, .faq-item').forEach(el => io.observe(el));
+
+/* --- the card recording: runs while it is on screen, the rule under the
+       browser bar tracks how far through the walkthrough it is --- */
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  document.querySelectorAll('.tp-video').forEach(v => {
+    const line = v.closest('.tp').querySelector('.tp-load b');
+    v.addEventListener('timeupdate', () => {
+      if(v.duration) line.style.width = (v.currentTime / v.duration) * 100 + '%';
+    });
+    new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? v.play().catch(() => {}) : v.pause());
+    }, {threshold:.3}).observe(v);
+  });
+}
 
 /* =========================================================
    nav — transparent at the top, glass once you scroll
@@ -325,3 +358,13 @@ document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
 /* =========================================================
    go
    ========================================================= */
+/* =========================================================
+   remember which project is being opened — some hosts and in-app
+   browsers drop the query string on a link click
+   ========================================================= */
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href*="project.html?id="]');
+  if(!a) return;
+  const id = new URL(a.getAttribute('href'), location.href).searchParams.get('id');
+  if(id){ try { sessionStorage.setItem('lastProjectId', id); } catch(err){} }
+}, true);

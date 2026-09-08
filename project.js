@@ -30,11 +30,103 @@ const visual = (src, alt) => src
   ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`
   : placeholder();
 
+/* a recording of the live site: plays while it is on screen, still frame otherwise */
+const clip = (v, poster, alt) => `
+  <video class="clip" playsinline muted loop preload="none" aria-label="${esc(alt)}"
+         ${poster ? `poster="${esc(poster)}"` : ''}>
+    ${v.webm ? `<source src="${esc(v.webm)}" type="video/webm">` : ''}
+    ${v.mp4 ? `<source src="${esc(v.mp4)}" type="video/mp4">` : ''}
+  </video>`;
+
+const shot = (s, alt) => s.video ? clip(s.video, s.image, alt) : visual(s.image, alt);
+
+/* A long, neutral stand-in page — used for the opener until a project has
+   real full-page captures in /assets. Deterministic, so it never reshuffles. */
+function longPage(seed, withHero){
+  let s = seed * 9301 + 49297;
+  const rand = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  const W = 1100, H = 2100, pad = 64;
+  let out = `<rect width="${W}" height="${H}" fill="#ffffff"/>`;
+  let y = 40;
+
+  if(withHero){
+    out += `<rect x="${pad}" y="26" width="86" height="13" rx="3" fill="#d6d6db"/>`;
+    for(let i = 0; i < 4; i++)
+      out += `<rect x="${740 + i * 60}" y="29" width="42" height="8" rx="4" fill="#e4e4e8"/>`;
+    out += `<rect x="0" y="64" width="${W}" height="1" fill="#ececee"/>`;
+    y = 65;
+
+    const heroH = 400 + Math.round(rand() * 120);
+    out += `<rect x="0" y="${y}" width="${W}" height="${heroH}" fill="#17171a"/>`;
+    out += `<rect x="${W/2 - 210}" y="${y + heroH/2 - 46}" width="420" height="30" rx="4" fill="#ffffff" opacity=".92"/>`;
+    out += `<rect x="${W/2 - 140}" y="${y + heroH/2 + 2}" width="280" height="30" rx="4" fill="#ffffff" opacity=".55"/>`;
+    out += `<rect x="${W/2 - 118}" y="${y + heroH/2 + 62}" width="106" height="34" rx="17" fill="#ffffff" opacity=".9"/>`;
+    out += `<rect x="${W/2 + 6}" y="${y + heroH/2 + 62}" width="106" height="34" rx="17" fill="none" stroke="#ffffff" stroke-opacity=".55"/>`;
+    y += heroH + 96;
+  }
+
+  const heading = () => {
+    out += `<rect x="${pad}" y="${y}" width="${200 + Math.round(rand()*160)}" height="26" rx="4" fill="#1d1d1f"/>`;
+    y += 46;
+    out += `<rect x="${pad}" y="${y}" width="${380 + Math.round(rand()*140)}" height="10" rx="5" fill="#e2e2e6"/>`;
+    y += 44;
+  };
+  const cards = n => {
+    const gap = 22, w = (W - pad*2 - gap*(n-1)) / n, h = 160 + Math.round(rand()*90);
+    for(let i = 0; i < n; i++)
+      out += `<rect x="${pad + i*(w+gap)}" y="${y}" width="${w}" height="${h}" rx="4" fill="${i % 2 ? '#ededf0' : '#e6e6ea'}"/>`;
+    y += h + 88;
+  };
+  const band = () => {
+    const h = 190 + Math.round(rand()*70);
+    out += `<rect x="0" y="${y}" width="${W}" height="${h}" fill="#f4f4f6"/>`;
+    out += `<rect x="${pad}" y="${y + h/2 - 24}" width="260" height="22" rx="4" fill="#c9c9d0"/>`;
+    out += `<rect x="${pad}" y="${y + h/2 + 10}" width="400" height="9" rx="4" fill="#dededf"/>`;
+    y += h + 88;
+  };
+  const columns = () => {
+    const h = 150 + Math.round(rand()*70);
+    out += `<rect x="${pad}" y="${y}" width="${W/2 - pad - 20}" height="${h}" rx="4" fill="#e9e9ed"/>`;
+    for(let i = 0; i < 4; i++)
+      out += `<rect x="${W/2 + 20}" y="${y + i*26}" width="${360 - i*40}" height="9" rx="4" fill="#e4e4e8"/>`;
+    y += h + 88;
+  };
+
+  const blocks = withHero
+    ? [heading, cards.bind(null, 3), band, columns, heading, cards.bind(null, 2)]
+    : [columns, heading, cards.bind(null, 3), band, columns, heading, cards.bind(null, 2), band];
+  let i = 0;
+  const floor = withHero ? H : H - 200;
+  while(y < floor - 220 && i < 40){ blocks[i % blocks.length](); i++; }
+
+  /* the lower half is the one that ends on a footer */
+  if(!withHero){
+    out += `<rect x="0" y="${H - 200}" width="${W}" height="200" fill="#f7f7f8"/>`;
+    for(let c = 0; c < 4; c++)
+      for(let r = 0; r < 4; r++)
+        out += `<rect x="${pad + c*230}" y="${H - 150 + r*22}" width="${r ? 92 : 62}" height="8" rx="4" fill="${r ? '#e2e2e6' : '#c9c9d0'}"/>`;
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img"
+    aria-label="Placeholder page layout">${out}</svg>`;
+}
+
+const posterPanel = (src, alt, seed, withHero) => src
+  ? `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`
+  : longPage(seed, withHero);
+
 /* ---------- which project ---------- */
 const params   = new URLSearchParams(location.search);
 const projects = window.PROJECTS || [];
-const wanted   = Number(params.get('id'));
+/* Some hosts and in-app browsers drop the query string on a link click, which
+   would silently land every card on the first project. The id the visitor
+   actually clicked is stashed on the way out, so fall back to that. */
+let wanted = Number(params.get('id'));
+if(!wanted){
+  try { wanted = Number(sessionStorage.getItem('lastProjectId')); } catch(e){}
+}
 const project  = projects.find(p => p.id === wanted) || projects[0];
+try { sessionStorage.setItem('lastProjectId', String(project.id)); } catch(e){}
 const idx      = projects.indexOf(project);
 const prev     = projects[(idx - 1 + projects.length) % projects.length];
 const next     = projects[(idx + 1) % projects.length];
@@ -42,10 +134,27 @@ const others   = projects.filter(p => p.id !== project.id).slice(0, 8);
 
 document.title = `${project.title} — Mahmoud Hamidoun`;
 
+/* ---------- the case study borrows the project's own colours ---------- */
+const isHex = v => /^#[0-9a-f]{3,8}$/i.test(String(v || ''));
+if(project.theme){
+  const t = project.theme;
+  document.body.classList.add('themed');
+  [['--accent', t.accent], ['--accent-deep', t.accentDeep],
+   ['--accent-ink', t.ink], ['--accent-tint', t.tint]]
+    .forEach(([k, v]) => { if(isHex(v)) document.body.style.setProperty(k, v); });
+}
+
 const live = safeUrl(project.url);
+const liveHost = live === '#' ? '' : live.replace(/^https?:\/\//, '').replace(/\/$/, '');
 const liveLink = live === '#'
   ? ''
-  : `<a class="cs-live" href="${live}" target="_blank" rel="noopener">View live site <span aria-hidden="true">↗</span></a>`;
+  : `<a class="cs-live" href="${live}" target="_blank" rel="noopener">
+       <span>Visit the live site</span>
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+         <path d="M7 17 17 7M9 7h8v8"/>
+       </svg>
+     </a>
+     <span class="cs-live-host">${esc(liveHost)}</span>`;
 
 /* ---------- build ---------- */
 document.getElementById('caseRoot').innerHTML = `
@@ -61,62 +170,72 @@ document.getElementById('caseRoot').innerHTML = `
           <span class="cs-tag reveal">${esc(project.tag)}</span>
           <h1 class="reveal" style="--d:.05s">${esc(project.title)}</h1>
           <p class="cs-lede reveal" style="--d:.1s">${esc(project.summary)}</p>
-          <div class="reveal" style="--d:.15s">${liveLink}</div>
+          <div class="cs-live-wrap reveal" style="--d:.15s">${liveLink}</div>
         </div>
 
         <dl class="cs-spec reveal" style="--d:.2s">
           <div><dt>Client</dt><dd>${esc(project.client)}</dd></div>
           <div><dt>Year</dt><dd>${esc(project.year)}</dd></div>
-          <div><dt>Scope</dt><dd>${esc(project.scope)}</dd></div>
-          <div><dt>Role</dt><dd>Design &amp; build, end to end</dd></div>
         </dl>
       </div>
     </div>
   </section>
 
-  <figure class="cs-cover reveal">
-    ${visual(project.cover, project.title + ' — full view')}
-  </figure>
+  <section class="cs-poster" aria-label="${esc(project.title)} — the site end to end">
+    <div class="poster-inner">
+      <figure class="poster-panel panel-back">
+        ${posterPanel(project.poster && project.poster.bottom,
+                      project.title + ' — lower half of the page', project.id * 7 + 3, false)}
+      </figure>
+      <figure class="poster-panel panel-front">
+        ${posterPanel(project.poster && project.poster.top,
+                      project.title + ' — upper half of the page', project.id * 7, true)}
+      </figure>
+    </div>
+  </section>
 
   <section class="cs-chapters">
     <div class="wrap">
-      ${project.sections.map((s, i) => `
+      ${project.sections.map(s => `
         <article class="chapter">
-          <div class="chapter-aside">
-            <span class="chapter-num reveal">${String(i + 1).padStart(2, '0')}</span>
-            <h2 class="reveal" style="--d:.05s">${esc(s.title)}</h2>
-          </div>
-          <div class="chapter-main">
-            <p class="reveal">${esc(s.text)}</p>
-            <div class="chapter-shot reveal" style="--d:.08s">${visual(s.image, s.title)}</div>
-          </div>
+          <h2 class="reveal">${esc(s.title)}</h2>
+          <p class="reveal" style="--d:.05s">${esc(s.text)}</p>
+          <div class="chapter-shot reveal" style="--d:.08s">${shot(s, s.title)}</div>
         </article>`).join('')}
     </div>
   </section>
 
-  <section class="cs-system">
+  ${project.screens && project.screens.length ? `
+  <section class="cs-screens">
     <div class="wrap">
-      <h2 class="cs-system-title reveal">Design system</h2>
-      <div class="sys-row reveal">
-        <span class="sys-label">Typeface</span>
-        <div class="sys-value">
-          <span class="sys-face">${esc(project.typography)}</span>
-          <span class="sys-note">Regular · Medium · Semibold</span>
-        </div>
-      </div>
-      <div class="sys-row reveal" style="--d:.06s">
-        <span class="sys-label">Palette</span>
-        <div class="sys-value sys-palette">
-          ${project.palette.map(hex => `
-            <span class="sys-chip"><i style="background:${esc(hex)}"></i>${esc(hex)}</span>`).join('')}
-        </div>
-      </div>
-      <div class="sys-row reveal" style="--d:.12s">
-        <span class="sys-label">Build</span>
-        <div class="sys-value"><span class="sys-note">Responsive across breakpoints · Accessible contrast · Optimised assets</span></div>
+      <h2 class="cs-band-title reveal">On a phone</h2>
+      <div class="screens-row">
+        ${project.screens.map((s, i) => `
+          <figure class="screen reveal" style="--d:${i * .08}s">
+            <div class="phone">${s.video
+              ? clip(s.video, s.src, s.caption || project.title)
+              : `<img src="${esc(s.src)}" alt="${esc(s.caption || project.title)}" loading="lazy">`}</div>
+            <figcaption>${esc(s.caption || '')}</figcaption>
+          </figure>`).join('')}
       </div>
     </div>
-  </section>
+  </section>` : ''}
+
+  ${live === '#' ? '' : `
+  <section class="cs-visit">
+    <div class="wrap cs-visit-inner reveal">
+      <div>
+        <h2>See it for yourself</h2>
+        <p>${esc(project.title)} is live and open to everyone — click through and use it the way your visitors would.</p>
+      </div>
+      <a class="cs-live cs-live-lg" href="${live}" target="_blank" rel="noopener">
+        <span>Visit the live site</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8"/>
+        </svg>
+      </a>
+    </div>
+  </section>`}
 
   <nav class="cs-pager" aria-label="Project navigation">
     <div class="wrap cs-pager-grid">
@@ -161,7 +280,7 @@ document.getElementById('caseRoot').innerHTML = `
               <div class="panel-inner">
                 <div class="panel-thumb">${visual(p.cover, p.title)}</div>
                 <div class="panel-body">
-                  <span class="panel-meta">${esc(p.tag)} · ${esc(p.scope)}</span>
+                  <span class="panel-meta">${esc(p.tag)} · ${esc(p.year)}</span>
                   <p class="panel-text">${esc(p.summary)}</p>
                   <a class="panel-link" href="project.html?id=${p.id}">See the project <span aria-hidden="true">→</span></a>
                 </div>
@@ -172,6 +291,19 @@ document.getElementById('caseRoot').innerHTML = `
     </div>
   </section>
 `;
+
+/* ---------- clips run only while they are on screen ---------- */
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!still){
+  const clipIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const v = e.target;
+      if(e.isIntersecting){ v.play().catch(() => {}); }
+      else v.pause();
+    });
+  }, {threshold:.25});
+  document.querySelectorAll('video.clip').forEach(v => clipIO.observe(v));
+}
 
 /* ---------- reveal + chrome ---------- */
 const io = new IntersectionObserver(entries => {
@@ -189,3 +321,10 @@ function onScroll(){
 window.addEventListener('scroll', onScroll, {passive:true});
 window.addEventListener('resize', onScroll);
 onScroll();
+/* same guard for the pager and the "more work" index on this page */
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href*="project.html?id="]');
+  if(!a) return;
+  const id = new URL(a.getAttribute('href'), location.href).searchParams.get('id');
+  if(id){ try { sessionStorage.setItem('lastProjectId', id); } catch(err){} }
+}, true);
