@@ -83,27 +83,29 @@ h2{font-size:clamp(30px,4.4vw,52px);}
 .btn:active{transform:translateY(-1px) scale(.98); transition-duration:.1s;}
 .btn[disabled]{opacity:.4; pointer-events:none;}
 
-/* ---------- nav (transparent at top, white on scroll) ---------- */
+/* ---------- nav (transparent at top, white on scroll) — logo in the middle ---------- */
 header{
   position:fixed; top:0; left:0; right:0; z-index:120;
-  background:transparent;
-  border-bottom:1px solid transparent;
-  transition:background .4s ease, border-color .4s ease, backdrop-filter .4s ease, box-shadow .4s ease;
+  background:transparent; border-bottom:1px solid transparent;
+  transition:background .4s ease, border-color .4s ease, box-shadow .4s ease;
 }
 header.scrolled{
-  background:rgba(255,255,255,.88);
-  backdrop-filter:blur(22px) saturate(160%);
+  background:#fff;
   border-bottom-color:rgba(0,0,0,.06);
   box-shadow:0 1px 0 rgba(0,0,0,.04);
 }
 header nav{
-  pointer-events:all;
+  position:relative; pointer-events:all;
   max-width:var(--maxw); margin:0 auto; padding:18px var(--pad);
   display:flex; align-items:center; justify-content:space-between; gap:20px;
-  background:none; border:none; border-radius:0;
   transition:padding .4s ease;
 }
 header.scrolled nav{padding-top:14px; padding-bottom:14px;}
+.nav-brand{
+  position:absolute; left:50%; top:50%; transform:translate(-50%, -50%);
+  font-family:var(--display); font-weight:800; font-size:23px; letter-spacing:-.06em; line-height:1;
+  color:var(--ink);
+}
 .nav-links{
   display:flex; align-items:center; gap:0;
   font-family:var(--body); font-size:15px; color:rgba(0,0,0,.55);
@@ -124,56 +126,98 @@ header.scrolled nav{padding-top:14px; padding-bottom:14px;}
   header nav{padding:14px var(--pad);}
   .nav-links{gap:0; font-size:13px;}
   .nav-links a{padding:5px 9px;}
+  .nav-brand{font-size:19px;}
   .nav-cta{font-size:13px !important; padding:9px 18px !important;}
 }
+@media(max-width:560px){
+  .nav-brand{display:none;}   /* no room between the links and the button on a phone */
+}
 
-
-/* ---------- hero (full-bleed video) ---------- */
+/* ---------- hero: a dotted field, a serif line, and the work down a corridor ---------- */
 .hero{
-  position:relative; min-height:100svh; background:var(--bg-2); display:flex; align-items:center;
-  padding:160px 0 110px; overflow:hidden; border-bottom:1px solid var(--line);
+  position:relative; height:100svh; min-height:680px; max-height:1000px; overflow:hidden;
+  background:var(--bg); border-bottom:1px solid var(--line);
 }
-.hero-media{position:absolute; inset:0; z-index:0;}
-.hero-video{width:100%; height:100%; object-fit:cover; display:block;}
-/* keeps dark text readable over footage — raise the alphas if your video is busy */
-.hero-scrim{
-  position:absolute; inset:0;
-  background:
-    linear-gradient(to bottom, rgba(245,245,247,.92) 0%, rgba(245,245,247,.7) 45%, rgba(245,245,247,.97) 100%),
-    radial-gradient(ellipse at 50% 45%, rgba(245,245,247,.45), rgba(245,245,247,.88) 78%);
+.hz-title{
+  position:absolute; left:50%; top:13.5%; transform:translateX(-50%); z-index:3; margin:0;
+  font-family:var(--display); font-weight:500;
+  font-size:clamp(32px, 4.2vw, 58px); line-height:1.08; letter-spacing:-.035em;
+  text-align:center; color:var(--ink); white-space:nowrap;
+  animation:hz-fade .9s ease .1s both;
 }
-.hero-inner{position:relative; z-index:2; max-width:900px; text-align:center; margin:0 auto;}
-.hero .lede{margin-left:auto; margin-right:auto;}
-.hero-stats{display:flex; align-items:center; justify-content:center; gap:30px; margin:38px 0 36px;}
-.stat-num{font-family:var(--display); font-size:38px; font-weight:700; display:block; line-height:1;}
-.stat-label{font-family:var(--mono); font-size:11.5px; color:var(--muted); letter-spacing:.04em;}
-.rule{width:1px; height:38px; background:var(--line);}
-.hero-actions{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:34px;}
-@media(max-width:600px){.hero{padding:130px 0 90px;} .hero-stats{gap:22px;}}
+.hz-lede{
+  position:absolute; left:50%; top:67%; transform:translateX(-50%); z-index:3; margin:0;
+  font-size:clamp(14px, 1.1vw, 16.5px); line-height:1.55; letter-spacing:-.005em; color:var(--muted);
+  text-align:center; white-space:nowrap;
+  animation:hz-fade .9s ease 1.3s both;
+}
 
-/* ---------- hero avatar + status bar ---------- */
-.hero-avatar{
-  position:relative; width:72px; height:72px; border-radius:50%; overflow:hidden;
-  border:2px solid rgba(26,24,21,.18); margin:0 auto 22px;
-  background:var(--surface);
+/* the button */
+.hz-prompt{
+  position:absolute; left:50%; top:81%; transform:translateX(-50%); z-index:3;
+  display:inline-flex; align-items:center; gap:14px;
+  padding:9px 9px 9px 26px; border-radius:100px;
+  background:var(--ink); color:#fff; font-size:15px; font-weight:500; letter-spacing:-.01em;
+  box-shadow:0 22px 48px -22px rgba(0,0,0,.6);
+  animation:hz-fade .9s ease 1.5s both;
+  transition:box-shadow .25s ease;
 }
-.hero-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
-.avatar-fallback{
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:-.02em; color:var(--muted);
+.hz-prompt:hover{box-shadow:0 26px 52px -22px rgba(0,0,0,.7);}
+.hz-prompt i{
+  width:34px; height:34px; border-radius:50%; display:grid; place-items:center; flex:none;
+  background:rgba(255,255,255,.12); color:#fff; transition:background .2s, transform .25s ease;
 }
-.hero-status{
-  display:inline-flex; align-items:center; gap:28px; flex-wrap:wrap; justify-content:center;
-  margin-top:38px; padding:16px 28px;
-  border:1px solid var(--line); background:rgba(245,242,234,.72);
-  backdrop-filter:blur(8px); border-radius:14px;
+.hz-prompt:hover i{background:rgba(255,255,255,.2); transform:translateX(2px);}
+.hz-prompt i svg{width:16px; height:16px;}
+
+/* ---- the corridor ----
+   Each slot is placed by hand in one 3D space (measured off the reference):
+   the end card sits far down the corridor, the edge cards right by the camera,
+   turning to face inward as they come. Perspective does the sizing.
+   --k scales the whole world and the lens together for smaller screens. */
+.hero{--k:1;}
+.hz-tunnel{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  perspective:calc(900px * var(--k)); perspective-origin:50% 50%;
 }
-.hero-status .status-item{display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:var(--muted);}
-.hero-status .status-item svg{width:14px; height:14px; stroke:var(--muted); flex-shrink:0;}
-.hero-status .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0; background:var(--live); animation:ping 2.2s ease-out infinite;}
-.hero-status .status-cta{font-size:13.5px; font-weight:500; border-bottom:1px solid var(--ink); padding-bottom:1px; color:var(--ink); transition:opacity .2s; white-space:nowrap;}
-.hero-status .status-cta:hover{opacity:.6;}
-@media(max-width:560px){.hero-status{gap:14px; padding:14px 18px;} .hero-status .status-cta{display:none;}}
+.hz-ring{
+  position:absolute; left:50%; top:50%; width:0; height:0;
+  transform-style:preserve-3d;
+  animation:hz-sway 14s ease-in-out infinite alternate;
+}
+.slot{
+  position:absolute; left:0; top:0; transform-style:preserve-3d;
+  transform:scale3d(var(--k), var(--k), var(--k)) translate3d(var(--x), 0, var(--z)) rotateY(var(--ry));
+}
+.card{
+  position:absolute; left:50%; top:50%; width:var(--w); height:var(--h);
+  transform:translate(-50%, -50%); margin:0; overflow:hidden; border-radius:6px;
+  background:#d8d8dc; box-shadow:0 30px 60px -30px rgba(0,0,0,.5);
+  --an:max(calc(var(--i) / 6), calc(var(--i) / -6));
+  animation:hz-card .9s cubic-bezier(.2,.8,.2,1) calc(.25s + var(--an) * .7s) both;
+}
+.card img{width:100%; height:100%; object-fit:cover; object-position:top; display:block;}
+
+@keyframes hz-card{
+  from{opacity:0; transform:translate(-50%, -50%) scale(.85);}
+  to{opacity:1; transform:translate(-50%, -50%) scale(1);}
+}
+@keyframes hz-sway{from{transform:rotateY(-1.4deg);} to{transform:rotateY(1.4deg);}}
+@keyframes hz-fade{from{opacity:0; transform:translate(-50%, 12px);} to{opacity:1; transform:translate(-50%, 0);}}
+
+@media(max-width:1180px){.hero{--k:.82;}}
+@media(max-width:900px){.hero{--k:.66;}}
+@media(max-width:760px){
+  .hero{min-height:640px; --k:.5;}
+  .hz-title{white-space:normal; width:92%; font-size:clamp(30px, 8.4vw, 44px); top:11%;}
+  .hz-lede{white-space:normal; width:88%; top:66%; font-size:14px;}
+  .hz-lede br{display:none;}
+}
+@media(max-width:480px){.hero{--k:.4;}}
+@media(prefers-reduced-motion:reduce){
+  .hz-title,.hz-lede,.hz-prompt,.card{animation:none;}
+  .hz-ring{animation:none;}
+}
 
 /* ---------- section heads ---------- */
 .sec-head{margin-bottom:52px; max-width:640px; text-align:center; margin-left:auto; margin-right:auto;}
@@ -468,9 +512,6 @@ footer{padding:64px 0 30px; background:var(--bg-2); border-top:1px solid var(--l
 }
 .reveal.in{opacity:1; transform:none; filter:blur(0);}
 
-/* hero arrives on load, a beat at a time */
-.hero .reveal{transform:translateY(46px) scale(.96); filter:blur(12px);}
-.hero .reveal.in{transform:none; filter:blur(0);}
 
 /* work tiles / rail cards / grid cards fade up as they enter */
 .tile,.rail-card,.faq-item{

@@ -132,7 +132,7 @@ const prev     = projects[(idx - 1 + projects.length) % projects.length];
 const next     = projects[(idx + 1) % projects.length];
 const others   = projects.filter(p => p.id !== project.id).slice(0, 2);
 
-document.title = `${project.title} — Mahmoud Hamidoun`;
+document.title = `${project.title} — ishowdevz`;
 
 /* ---------- the case study borrows the project's own colours ---------- */
 const isHex = v => /^#[0-9a-f]{3,8}$/i.test(String(v || ''));
@@ -322,3 +322,4 @@ document.addEventListener('click', e => {
   const id = new URL(a.getAttribute('href'), location.href).searchParams.get('id');
   if(id){ try { sessionStorage.setItem('lastProjectId', id); } catch(err){} }
 }, true);
+

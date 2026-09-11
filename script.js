@@ -251,7 +251,7 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
 }
 
 /* =========================================================
-   nav — transparent at the top, glass once you scroll
+   nav — transparent at the top, white once you scroll
    ========================================================= */
 const header = document.querySelector('header');
 function updateHeader(){
@@ -259,15 +259,6 @@ function updateHeader(){
 }
 window.addEventListener('scroll', updateHeader, {passive:true});
 updateHeader();
-
-/* =========================================================
-   hero video — hold still for reduced-motion visitors
-   ========================================================= */
-const heroVideo = document.getElementById('heroVideo');
-if(heroVideo && REDUCED){
-  heroVideo.removeAttribute('autoplay');
-  heroVideo.pause();
-}
 
 /* =========================================================
    FAQ accordion (one open at a time)
