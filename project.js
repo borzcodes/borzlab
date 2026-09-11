@@ -130,7 +130,7 @@ try { sessionStorage.setItem('lastProjectId', String(project.id)); } catch(e){}
 const idx      = projects.indexOf(project);
 const prev     = projects[(idx - 1 + projects.length) % projects.length];
 const next     = projects[(idx + 1) % projects.length];
-const others   = projects.filter(p => p.id !== project.id).slice(0, 8);
+const others   = projects.filter(p => p.id !== project.id).slice(0, 2);
 
 document.title = `${project.title} — Mahmoud Hamidoun`;
 
@@ -265,29 +265,23 @@ document.getElementById('caseRoot').innerHTML = `
     <div class="wrap">
       <div class="index-head reveal">
         <h2>More work</h2>
-        <a href="index.html#work" class="index-all">All projects →</a>
       </div>
-      <ul class="index-list">
+      <div class="index-grid">
         ${others.map((p, i) => `
-          <li class="index-item reveal" style="--d:${(i % 4) * .04}s">
-            <a class="index-row" href="project.html?id=${p.id}">
-              <span class="index-num">${String(i + 1).padStart(2, '0')}</span>
-              <span class="index-name">${esc(p.title)}</span>
-              <span class="index-client">${esc(p.client)}</span>
-              <span class="index-year">${esc(p.year)}</span>
-            </a>
-            <div class="index-panel">
-              <div class="panel-inner">
-                <div class="panel-thumb">${visual(p.cover, p.title)}</div>
-                <div class="panel-body">
-                  <span class="panel-meta">${esc(p.tag)} · ${esc(p.year)}</span>
-                  <p class="panel-text">${esc(p.summary)}</p>
-                  <a class="panel-link" href="project.html?id=${p.id}">See the project <span aria-hidden="true">→</span></a>
-                </div>
-              </div>
+          <a class="index-card reveal" style="--d:${i * .06}s" href="project.html?id=${p.id}">
+            <div class="index-thumb">${p.poster
+              ? `<img src="${esc(p.poster.top)}" alt="${esc(p.title)}" loading="lazy">`
+              : longPage(p.id * 7, true)}</div>
+            <div class="index-body">
+              <span class="index-tag">${esc(p.tag)}</span>
+              <h3>${esc(p.title)}</h3>
+              <span class="index-meta">${esc(p.client)} · ${esc(p.year)}</span>
             </div>
-          </li>`).join('')}
-      </ul>
+          </a>`).join('')}
+      </div>
+      <a class="index-more reveal" href="index.html#work">
+        See all projects <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 `;

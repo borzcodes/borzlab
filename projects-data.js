@@ -127,14 +127,58 @@ window.PROJECTS = [
     ]
   },
 
-  { id: 3, title: "Lumen", tag: "Dashboard", client: "Lumen Systems", year: "2025",
-    short: "Short description of this project goes here.",
-    summary: "Complete UI/UX design and development for Lumen. Replace this paragraph with the real brief for the project.",
-    url: "#", cover: "",
+  {
+    id: 3,
+    title: "NorthSoul",
+    tag: "DJ & producer",
+    client: "NorthSoul — Morocco",
+    year: "2026",
+    short: "One screen for a touring DJ — a wall of gig footage you push around with your hand.",
+    summary: "NorthSoul is a Moroccan DJ and producer booked from Madrid to Istanbul, with no pre-planned playlists and a phone full of crowd footage. He did not want a website so much as a room: one screen, his name across it, and behind it every night he has played. The site never scrolls as a page — the wordmark splits open to let his portrait through, then dissolves into a curved wall of a hundred clips you scroll or drag across, with About and Book sliding in on top when someone is ready to talk.",
+    url: "https://northsoul.vercel.app/",
+    cover: "assets/projects/northsoul/hero.jpg",
+    theme: { accent: "#101010", accentDeep: "#000000", ink: "#101010", tint: "#F4F3EF" },
+    poster: {
+      top:    "assets/projects/northsoul/poster-top.jpg",
+      bottom: "assets/projects/northsoul/poster-bottom.jpg"
+    },
+    preview: {
+      url: "northsoul.vercel.app",
+      video: {
+        webm: "assets/projects/northsoul/motion/card.webm",
+        mp4:  "assets/projects/northsoul/motion/card.mp4",
+        poster: "assets/projects/northsoul/card-poster.jpg"
+      }
+    },
     sections: [
-      { title: "Data-First Interface", text: "Replace this copy with the real story of the design decisions behind the build.", image: "" },
-      { title: "Built for Daily Use", text: "Replace this copy with how the product holds up under real usage.", image: "" }
-    ] },
+      { title: "A name that opens like a door",
+        text: "It starts as two words in a serif, alone on warm paper, with clips drifting faintly behind. Scroll and the wordmark pulls apart — North to the left, Soul to the right — and his portrait steps into the gap. Keep going and the whole thing gives way to the wall. Nothing on the page is clicked to get there; the visitor's own hand does it.",
+        image: "assets/projects/northsoul/split.jpg",
+        video: { webm: "assets/projects/northsoul/motion/enter.webm", mp4: "assets/projects/northsoul/motion/enter.mp4" } },
+      { title: "A hundred nights on one curved wall",
+        text: "The archive is not a grid, it is a surface — tiles set on a gentle curve so the edges fall away, every one a clip from a set. Drag it and it follows the cursor with real weight, scroll it and the counter at the bottom keeps count of how far you have gone. Hover a tile and it sharpens out of the haze. It holds his entire back catalogue without a single caption.",
+        image: "assets/projects/northsoul/wall.jpg",
+        video: { webm: "assets/projects/northsoul/motion/wall.webm", mp4: "assets/projects/northsoul/motion/wall.mp4" } },
+      { title: "About, without leaving the room",
+        text: "About does not navigate away — it rises over the wall, bringing the split wordmark and portrait with it, and then reads down into the bio: where he plays, what he plays, how to reach him. A ← Back in the corner drops you straight onto the wall where you left it.",
+        image: "assets/projects/northsoul/about.jpg",
+        video: { webm: "assets/projects/northsoul/motion/about.webm", mp4: "assets/projects/northsoul/motion/about.mp4" } },
+      { title: "Book: the next date first, then the terms",
+        text: "The booking view leads with whatever is next — the flyer, the club, the city, the countdown in days — before it says a word about terms. Below that, the four things a promoter actually needs to know, ruled off one per line, and two ways to make contact. No form; a message with a date and a city is enough.",
+        image: "assets/projects/northsoul/book.jpg",
+        video: { webm: "assets/projects/northsoul/motion/book.webm", mp4: "assets/projects/northsoul/motion/book.mp4" } }
+    ],
+    screens: [
+      { src: "assets/projects/northsoul/mobile.jpg", kind: "mobile",
+        caption: "The wordmark splits and the wall arrives, one thumb-swipe at a time",
+        video: { webm: "assets/projects/northsoul/motion/mobile-enter.webm",
+                 mp4:  "assets/projects/northsoul/motion/mobile-enter.mp4" } },
+      { src: "assets/projects/northsoul/mobile-wall.jpg", kind: "mobile",
+        caption: "The wall keeps its curve and its weight on touch",
+        video: { webm: "assets/projects/northsoul/motion/mobile-wall.webm",
+                 mp4:  "assets/projects/northsoul/motion/mobile-wall.mp4" } }
+    ]
+  },
 
   { id: 4, title: "Northwind", tag: "E-commerce", client: "Northwind Goods", year: "2025",
     short: "Short description of this project goes here.",
